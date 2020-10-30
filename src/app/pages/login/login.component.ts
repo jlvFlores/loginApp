@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { UsuarioModel } from '../../models/usuario.module';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,7 +20,7 @@ export class LoginComponent implements OnInit {
   constructor(private auth: AuthService,
               private router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     if ( localStorage.getItem('email') ) {
       this.usuario.email = localStorage.getItem('email');
@@ -26,16 +28,14 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  login( form: NgForm) {
-
-    const Swal = require('sweetalert2');
+  login( form: NgForm): void {
 
     if ( form.invalid ) { return; }
 
     Swal.fire({
+      text: 'espere for favor...',
+      icon: 'info',
       allowOutsideClick: false,
-      type: 'info',
-      text: 'espere for favor...'
     });
     Swal.showLoading();
 
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
         Swal.close();
 
         if ( this.recordarme ){
-          localStorage.setItem('emai', this.usuario.email);
+          localStorage.setItem('email', this.usuario.email);
         }
 
         this.router.navigateByUrl('/home');
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
       }, (err) => {
         console.log(err.error.error.message);
         Swal.fire({
-          type: 'error',
+          icon: 'error',
           title: 'error al autenticar',
           text: err.error.error.message
         });
